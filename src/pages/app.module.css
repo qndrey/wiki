@@ -56,6 +56,7 @@
   display: flex;
   align-items: center;
   background-color: var(--backgroundColor);
+  padding: 15px;
 }
 
 .app-main > .app-content > div {
@@ -68,4 +69,19 @@
   float: right;
   margin-top: 15px;
   min-width: 100px;
+}
+
+@media only screen and (max-width: 375px) {
+  .app-intro {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .app-intro-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }

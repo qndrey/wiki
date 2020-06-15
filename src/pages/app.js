@@ -1,7 +1,6 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import Loading from "../components/loading";
 import logo from "../img/upday-logo-white.svg";
 
 import styles from "./app.module.css";
@@ -25,17 +24,12 @@ async function fetchWikiData({ locale = "en" }) {
 }
 
 function App() {
-  const [locale, setLocale] = useState("en");
-  const [data, setData] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [locale, setLocale] = useState(window.navigator.language.split("-")[0]);
+  const [data, setData] = useState({});
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true);
-      const response = await fetchWikiData({ locale });
-
-      setData(response);
-      setIsLoading(false);
+      setData(await fetchWikiData({ locale }));
     }
 
     fetchData();
@@ -49,6 +43,8 @@ function App() {
           <select
             className={styles["app-lang-switch"]}
             onChange={(e) => setLocale(e.currentTarget.value)}
+            value={locale}
+            data-testid="lang-switcher"
           >
             <option value="en">English</option>
             <option value="de">Deutsch</option>
@@ -64,34 +60,25 @@ function App() {
         </div>
       </header>
       <main className={styles["app-main"]}>
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <Fragment>
-            <section className={styles["app-intro"]}>
-              <aside>
-                <h1>{data.displaytitle}</h1>
-                <div
-                  style={{
-                    width: data.thumbnail?.width,
-                    height: data.thumbnail?.height,
-                  }}
-                >
-                  <img
-                    src={data.thumbnail?.source}
-                    alt={data.displaytitle}
-                  ></img>
-                </div>
-              </aside>
-              <div className={styles["app-intro-description"]}>
-                <p>{data.description}</p>
-              </div>
-            </section>
-            <section className={styles["app-content"]}>
-              <div>{data.extract}</div>
-            </section>
-          </Fragment>
-        )}
+        <section className={styles["app-intro"]}>
+          <aside className={styles["app-intro-box"]}>
+            <h1>{data.displaytitle}</h1>
+            <div
+              style={{
+                width: data.thumbnail?.width,
+                height: data.thumbnail?.height,
+              }}
+            >
+              <img src={data.thumbnail?.source} alt={data.displaytitle}></img>
+            </div>
+          </aside>
+          <div className={styles["app-intro-description"]}>
+            <p>{data.description}</p>
+          </div>
+        </section>
+        <section className={styles["app-content"]}>
+          <div>{data.extract}</div>
+        </section>
       </main>
     </div>
   );
