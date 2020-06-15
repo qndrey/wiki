@@ -9,9 +9,16 @@ import styles from "./app.module.css";
 const WIKI_API_URL =
   "https://{{locale}}.wikipedia.org/api/rest_v1/page/summary";
 
+const localeToPageTitle = {
+  el: "Άλμπερτ_Αϊνστάιν",
+  ru: "Эйнштейн,_Альберт",
+};
+
 async function fetchWikiData({ locale = "en" }) {
   const { data } = await axios.get(
-    `${WIKI_API_URL.replace("{{locale}}", locale)}/Albert_Einstein`
+    `${WIKI_API_URL.replace("{{locale}}", locale)}/${
+      localeToPageTitle[locale] || "Albert_Einstein"
+    }`
   );
 
   return data;
@@ -34,7 +41,6 @@ function App() {
     fetchData();
   }, [locale]);
 
-  console.log(data);
   return (
     <div className={styles.app}>
       <header className={styles["app-header"]}>
@@ -44,8 +50,16 @@ function App() {
             className={styles["app-lang-switch"]}
             onChange={(e) => setLocale(e.currentTarget.value)}
           >
-            <option value="en">En</option>
-            <option value="de">De</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="it">Italiano</option>
+            <option value="ru">Русский</option>
+            <option value="tr">Türkçe</option>
+            <option value="pl">Polski</option>
+            <option value="el">Ελληνικά</option>
+            <option value="pt">Português</option>
           </select>
         </div>
       </header>
@@ -59,12 +73,12 @@ function App() {
                 <h1>{data.displaytitle}</h1>
                 <div
                   style={{
-                    width: data.thumbnail.width,
-                    height: data.thumbnail.height,
+                    width: data.thumbnail?.width,
+                    height: data.thumbnail?.height,
                   }}
                 >
                   <img
-                    src={data.thumbnail.source}
+                    src={data.thumbnail?.source}
                     alt={data.displaytitle}
                   ></img>
                 </div>
